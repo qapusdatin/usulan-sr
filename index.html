@@ -121,7 +121,8 @@
                 <h3 class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 px-3 tracking-wider uppercase hide-on-collapse">Dashboard</h3>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="#" class="menu-item flex items-center gap-3 px-3 py-2.5 bg-brand-blue text-white rounded-xl font-medium shadow-sm">
+                        <!-- Menu item non-aktif -->
+                        <a href="#" class="menu-item flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium">
                             <i class="menu-item-icon ph ph-squares-four text-lg"></i>
                             <span class="text-sm hide-on-collapse">Dashboard</span>
                         </a>
@@ -140,16 +141,40 @@
                 <h3 class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 px-3 tracking-wider uppercase hide-on-collapse">Data Pokok</h3>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="#" class="menu-item flex items-center justify-between px-3 py-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium">
+                        <!-- Menu Induk TIDAK AKTIF (Default) -->
+                        <a href="#" id="menu-sekolah-rakyat" class="menu-item flex items-center justify-between px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-xl font-medium transition-colors cursor-pointer">
                             <div class="menu-item-wrapper flex items-center gap-3">
                                 <i class="menu-item-icon ph ph-buildings text-lg"></i>
                                 <span class="text-sm hide-on-collapse">Sekolah Rakyat</span>
                             </div>
-                            <i class="ph ph-caret-down text-xs text-slate-400 dark:text-slate-500 hide-on-collapse"></i>
+                            <!-- Hapus rotate-180 agar panah menghadap ke bawah -->
+                            <i id="icon-sekolah-rakyat" class="ph ph-caret-down text-xs hide-on-collapse transition-transform duration-300"></i>
                         </a>
+                        
+                        <!-- Submenu Container (Default: hidden) -->
+                        <ul id="submenu-sekolah-rakyat" class="mt-1 space-y-1 pl-4 hide-on-collapse hidden">
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-brand-blue hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors font-medium text-[13px]">
+                                    <div class="w-1.5 h-1.5 rounded-full border border-slate-400 dark:border-slate-500"></div>
+                                    <span>Daftar Sekolah</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-brand-blue hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors font-medium text-[13px]">
+                                    <div class="w-1.5 h-1.5 rounded-full border border-slate-400 dark:border-slate-500"></div>
+                                    <span>Daftar Usulan SR</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-brand-blue hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors font-medium text-[13px]">
+                                    <div class="w-1.5 h-1.5 rounded-full border border-slate-400 dark:border-slate-500"></div>
+                                    <span>Usulan Baru SR</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
-                        <a href="#" class="menu-item flex items-center justify-between px-3 py-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium">
+                        <a href="#" class="menu-item flex items-center justify-between px-3 py-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium mt-0.5">
                             <div class="menu-item-wrapper flex items-center gap-3">
                                 <i class="menu-item-icon ph ph-users text-lg"></i>
                                 <span class="text-sm hide-on-collapse">Peserta Didik</span>
@@ -368,7 +393,7 @@
     <main class="flex-1 flex flex-col h-full bg-white dark:bg-slate-900 relative transition-colors duration-300">
         
         <!-- Header -->
-        <header class="h-[60px] flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900 z-10 sticky top-0 transition-colors duration-300">
+        <header class="h-[60px] flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900 z-40 sticky top-0 transition-colors duration-300">
             <div class="flex items-center space-x-4 text-slate-600 dark:text-slate-300">
                 <!-- Tombol Expand / Collapse -->
                 <button id="sidebarToggleBtn" class="hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-lg transition-colors focus:outline-none">
@@ -376,7 +401,8 @@
                 </button>
                 <div class="flex items-center space-x-2 text-sm font-medium hidden sm:flex">
                     <i class="ph ph-clock text-lg"></i>
-                    <span>Sabtu, 26 September 2026 pukul 09.41.19</span>
+                    <!-- ID "current-datetime" untuk js dinamis -->
+                    <span id="current-datetime">Memuat waktu...</span>
                 </div>
             </div>
             <div class="flex items-center space-x-4 text-slate-600 dark:text-slate-300">
@@ -384,9 +410,71 @@
                 <button id="themeToggleBtn" class="hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-lg transition-colors focus:outline-none">
                     <i id="themeToggleIcon" class="ph ph-moon text-xl"></i>
                 </button>
-                <div class="w-9 h-9 rounded-full bg-brand-blue text-white flex items-center justify-center font-semibold text-sm shadow-sm cursor-pointer border-2 border-transparent hover:border-blue-200 dark:hover:border-blue-700 transition-all">
-                    UH
+                
+                <!-- User Profile Section -->
+                <div class="relative">
+                    <!-- Tombol Inisial User -->
+                    <div id="userProfileBtn" class="w-9 h-9 rounded-full bg-brand-blue text-white flex items-center justify-center font-semibold text-sm shadow-sm cursor-pointer border-2 border-transparent hover:border-blue-200 dark:hover:border-blue-700 transition-all">
+                        UH
+                    </div>
+                    
+                    <!-- Popup Profil Pengguna -->
+                    <div id="userProfilePopup" class="absolute right-0 top-12 w-[340px] bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-6 hidden z-50 transition-colors duration-300">
+                        <h4 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-5">Profil Pengguna</h4>
+                        
+                        <!-- Info Pengguna -->
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="w-16 h-16 rounded-full bg-brand-blue text-white flex items-center justify-center text-xl font-bold shadow-sm shrink-0">UH</div>
+                            <div class="flex flex-col space-y-1.5 overflow-hidden">
+                                <span class="font-semibold text-slate-800 dark:text-slate-100 text-sm truncate">Ujang Taofik Hidayat</span>
+                                <div class="flex items-center text-[11px] text-slate-500 dark:text-slate-400">
+                                    <i class="ph ph-briefcase mr-2 text-slate-400"></i>
+                                    <span class="truncate">ADMIN USER</span>
+                                </div>
+                                <div class="flex items-center text-[11px] text-slate-500 dark:text-slate-400">
+                                    <i class="ph ph-at mr-2 text-slate-400"></i>
+                                    <span class="truncate">196907071994******</span>
+                                </div>
+                                <div class="flex items-center text-[11px] text-slate-500 dark:text-slate-400">
+                                    <i class="ph ph-map-pin mr-2 text-slate-400"></i>
+                                    <span class="truncate">KEMENTERIAN SOSIAL</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Menu List -->
+                        <div class="space-y-2 mb-6">
+                            <!-- Akun Saya -->
+                            <a href="#" class="flex items-start space-x-4 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <div class="w-10 h-10 rounded-xl bg-brand-blue text-white flex items-center justify-center shadow-sm shrink-0">
+                                    <i class="ph ph-user text-xl"></i>
+                                </div>
+                                <div class="flex flex-col justify-center h-10">
+                                    <div class="text-sm font-semibold text-slate-800 dark:text-slate-100">Akun Saya</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Kelola Profil Akun</div>
+                                </div>
+                            </a>
+                            
+                            <!-- Ubah Password -->
+                            <a href="#" class="flex items-start space-x-4 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <div class="w-10 h-10 rounded-xl bg-brand-blue text-white flex items-center justify-center shadow-sm shrink-0">
+                                    <i class="ph ph-key text-xl"></i>
+                                </div>
+                                <div class="flex flex-col justify-center h-10">
+                                    <div class="text-sm font-semibold text-slate-800 dark:text-slate-100">Ubah Password</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Kelola Keamanan Akun</div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Tombol Keluar -->
+                        <button class="w-full flex items-center justify-center space-x-2 py-2.5 border border-brand-blue dark:border-blue-400 text-brand-blue dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-700/50 transition text-sm font-medium">
+                            <i class="ph ph-sign-out text-lg"></i>
+                            <span>Keluar Aplikasi</span>
+                        </button>
+                    </div>
                 </div>
+
             </div>
         </header>
 
@@ -782,6 +870,42 @@
     </main>
 
     <script>
+        // Tanggal dan Waktu Dinamis
+        function updateDateTime() {
+            const datetimeElement = document.getElementById('current-datetime');
+            if (!datetimeElement) return;
+
+            const now = new Date();
+            
+            // Format Hari
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const dayName = days[now.getDay()];
+            
+            // Format Tanggal, Bulan, Tahun
+            const date = now.getDate();
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const monthName = months[now.getMonth()];
+            const year = now.getFullYear();
+
+            // Format Jam, Menit, Detik (tambahkan 0 di depan jika kurang dari 10)
+            const formatTime = (num) => num.toString().padStart(2, '0');
+            const hours = formatTime(now.getHours());
+            const minutes = formatTime(now.getMinutes());
+            const seconds = formatTime(now.getSeconds());
+
+            // Menyusun string sesuai format
+            const formattedString = `${dayName}, ${date} ${monthName} ${year} pukul ${hours}.${minutes}.${seconds}`;
+            
+            // Menampilkan ke dalam elemen HTML
+            datetimeElement.textContent = formattedString;
+        }
+
+        // Panggil fungsi segera saat halaman dimuat
+        updateDateTime();
+        
+        // Perbarui setiap 1000 milidetik (1 detik)
+        setInterval(updateDateTime, 1000);
+
         // Dark Mode Toggle Logic
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const themeToggleIcon = document.getElementById('themeToggleIcon');
@@ -821,6 +945,37 @@
         sidebarToggleBtn.addEventListener('click', () => {
             sidebar.classList.toggle('sidebar-collapsed');
             localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('sidebar-collapsed'));
+        });
+
+        // Menu Expand/Collapse Logic for "Sekolah Rakyat"
+        const menuSekolahRakyat = document.getElementById('menu-sekolah-rakyat');
+        const submenuSekolahRakyat = document.getElementById('submenu-sekolah-rakyat');
+        const iconSekolahRakyat = document.getElementById('icon-sekolah-rakyat');
+
+        menuSekolahRakyat.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Jika sidebar sedang collapsed, cegah klik membuka menu agar tidak berantakan
+            if (sidebar.classList.contains('sidebar-collapsed')) return;
+            
+            submenuSekolahRakyat.classList.toggle('hidden');
+            iconSekolahRakyat.classList.toggle('rotate-180');
+        });
+
+        // User Profile Popup Logic
+        const userProfileBtn = document.getElementById('userProfileBtn');
+        const userProfilePopup = document.getElementById('userProfilePopup');
+
+        // Toggle popup on button click
+        userProfileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userProfilePopup.classList.toggle('hidden');
+        });
+
+        // Hide popup when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userProfileBtn.contains(e.target) && !userProfilePopup.contains(e.target)) {
+                userProfilePopup.classList.add('hidden');
+            }
         });
 
         // Chart Configuration
