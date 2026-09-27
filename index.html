@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SETARA - Sistem Edukasi Terpadu Sekolah Rakyat</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/apple-touch-icon.png" />
@@ -57,48 +57,54 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Sidebar Collapse Utilities */
+        /* Sidebar Collapse Utilities (Berlaku hanya untuk Desktop - min 768px) */
         #sidebar {
-            transition: width 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
         }
-        .sidebar-collapsed {
-            width: 80px !important;
-        }
-        .sidebar-collapsed .hide-on-collapse {
-            display: none !important;
-        }
-        .sidebar-collapsed .show-on-collapse {
-            display: flex !important;
-        }
-        .sidebar-collapsed .menu-item {
-            justify-content: center !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-        .sidebar-collapsed .menu-item-wrapper {
-            justify-content: center !important;
-            width: 100% !important;
-        }
-        .sidebar-collapsed .menu-item-icon {
-            font-size: 1.5rem !important;
-        }
-        .sidebar-collapsed .logo-container {
-            gap: 0 !important;
-            justify-content: center !important;
-        }
-        .sidebar-collapsed .logo-container img {
-            height: 28px !important;
-        }
-        .sidebar-collapsed .profile-box {
-            padding: 0.75rem 0 !important;
-            background-color: transparent !important;
+        
+        @media (min-width: 768px) {
+            .sidebar-collapsed {
+                width: 80px !important;
+            }
+            .sidebar-collapsed .hide-on-collapse {
+                display: none !important;
+            }
+            .sidebar-collapsed .show-on-collapse {
+                display: flex !important;
+            }
+            .sidebar-collapsed .menu-item {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            .sidebar-collapsed .menu-item-wrapper {
+                justify-content: center !important;
+                width: 100% !important;
+            }
+            .sidebar-collapsed .menu-item-icon {
+                font-size: 1.5rem !important;
+            }
+            .sidebar-collapsed .logo-container {
+                gap: 0 !important;
+                justify-content: center !important;
+            }
+            .sidebar-collapsed .logo-container img {
+                height: 28px !important;
+            }
+            .sidebar-collapsed .profile-box {
+                padding: 0.75rem 0 !important;
+                background-color: transparent !important;
+            }
         }
     </style>
 </head>
-<body class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 h-screen w-screen overflow-hidden flex font-sans transition-colors duration-300">
+<body class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 h-screen w-full overflow-hidden flex font-sans transition-colors duration-300 relative">
+
+    <!-- Mobile Overlay (Latar Belakang Gelap Saat Sidebar Terbuka di Mobile) -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-900/80 z-40 hidden md:hidden transition-opacity duration-300 opacity-0 backdrop-blur-sm"></div>
 
     <!-- Left Sidebar -->
-    <aside id="sidebar" class="w-[260px] lg:w-[280px] h-full flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 z-20 transition-colors duration-300 overflow-hidden">
+    <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 z-50 md:z-20 w-[260px] lg:w-[280px] h-full flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 transition-transform md:transition-all duration-300 overflow-hidden -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
         
         <!-- Logos -->
         <div class="h-[70px] flex items-center justify-center border-b border-slate-100 dark:border-slate-800 shrink-0 px-4 mt-2">
@@ -123,7 +129,6 @@
                 <h3 class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 px-3 tracking-wider uppercase hide-on-collapse">Dashboard</h3>
                 <ul class="space-y-0.5">
                     <li>
-                        <!-- Menu item non-aktif -->
                         <a href="#" class="menu-item flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium">
                             <i class="menu-item-icon ph ph-squares-four text-lg"></i>
                             <span class="text-sm hide-on-collapse">Dashboard</span>
@@ -149,7 +154,6 @@
                                 <i class="menu-item-icon ph ph-buildings text-lg"></i>
                                 <span class="text-sm hide-on-collapse">Sekolah Rakyat</span>
                             </div>
-                            <!-- Hapus rotate-180 agar panah menghadap ke bawah -->
                             <i id="icon-sekolah-rakyat" class="ph ph-caret-down text-xs hide-on-collapse transition-transform duration-300"></i>
                         </a>
                         
@@ -392,22 +396,23 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-full bg-white dark:bg-slate-900 relative transition-colors duration-300">
+    <!-- Menambahkan w-full dan min-w-0 agar child flex tidak mengembang melampaui lebar layar -->
+    <main class="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-900 relative transition-colors duration-300 w-full min-w-0">
         
         <!-- Header -->
-        <header class="h-[60px] flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900 z-40 sticky top-0 transition-colors duration-300">
-            <div class="flex items-center space-x-4 text-slate-600 dark:text-slate-300">
+        <header class="h-[60px] flex items-center justify-between px-4 sm:px-6 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900 z-40 sticky top-0 transition-colors duration-300">
+            <div class="flex items-center space-x-3 text-slate-600 dark:text-slate-300">
                 <!-- Tombol Expand / Collapse -->
                 <button id="sidebarToggleBtn" class="hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-lg transition-colors focus:outline-none">
                     <i class="ph ph-list text-2xl"></i>
                 </button>
-                <div class="flex items-center space-x-2 text-sm font-medium hidden sm:flex">
+                <div class="flex items-center space-x-2 text-[13px] font-medium hidden md:flex">
                     <i class="ph ph-clock text-lg"></i>
                     <!-- ID "current-datetime" untuk js dinamis -->
                     <span id="current-datetime">Memuat waktu...</span>
                 </div>
             </div>
-            <div class="flex items-center space-x-4 text-slate-600 dark:text-slate-300">
+            <div class="flex items-center space-x-3 text-slate-600 dark:text-slate-300">
                 <!-- Tombol Toggle Dark Mode -->
                 <button id="themeToggleBtn" class="hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-lg transition-colors focus:outline-none">
                     <i id="themeToggleIcon" class="ph ph-moon text-xl"></i>
@@ -420,25 +425,25 @@
                         UH
                     </div>
                     
-                    <!-- Popup Profil Pengguna -->
-                    <div id="userProfilePopup" class="absolute right-0 top-12 w-[340px] bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-6 hidden z-50 transition-colors duration-300">
+                    <!-- Popup Profil Pengguna (Ukuran disesuaikan agar tidak meluber di HP) -->
+                    <div id="userProfilePopup" class="absolute right-0 sm:right-0 top-12 w-[280px] sm:w-[340px] bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-5 sm:p-6 hidden z-50 transition-colors duration-300">
                         <h4 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-5">Profil Pengguna</h4>
                         
                         <!-- Info Pengguna -->
-                        <div class="flex items-center space-x-4 mb-6">
-                            <div class="w-16 h-16 rounded-full bg-brand-blue text-white flex items-center justify-center text-xl font-bold shadow-sm shrink-0">UH</div>
-                            <div class="flex flex-col space-y-1.5 overflow-hidden">
+                        <div class="flex items-center space-x-3 sm:space-x-4 mb-6">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-brand-blue text-white flex items-center justify-center text-lg sm:text-xl font-bold shadow-sm shrink-0">UH</div>
+                            <div class="flex flex-col space-y-1.5 overflow-hidden w-full">
                                 <span class="font-semibold text-slate-800 dark:text-slate-100 text-sm truncate">Ujang Taofik Hidayat</span>
-                                <div class="flex items-center text-[11px] text-slate-500 dark:text-slate-400">
-                                    <i class="ph ph-briefcase mr-2 text-slate-400"></i>
+                                <div class="flex items-center text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400">
+                                    <i class="ph ph-briefcase mr-1.5 text-slate-400"></i>
                                     <span class="truncate">ADMIN USER</span>
                                 </div>
-                                <div class="flex items-center text-[11px] text-slate-500 dark:text-slate-400">
-                                    <i class="ph ph-at mr-2 text-slate-400"></i>
+                                <div class="flex items-center text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400">
+                                    <i class="ph ph-at mr-1.5 text-slate-400"></i>
                                     <span class="truncate">196907071994******</span>
                                 </div>
-                                <div class="flex items-center text-[11px] text-slate-500 dark:text-slate-400">
-                                    <i class="ph ph-map-pin mr-2 text-slate-400"></i>
+                                <div class="flex items-center text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400">
+                                    <i class="ph ph-map-pin mr-1.5 text-slate-400"></i>
                                     <span class="truncate">KEMENTERIAN SOSIAL</span>
                                 </div>
                             </div>
@@ -447,30 +452,30 @@
                         <!-- Menu List -->
                         <div class="space-y-2 mb-6">
                             <!-- Akun Saya -->
-                            <a href="#" class="flex items-start space-x-4 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                                <div class="w-10 h-10 rounded-xl bg-brand-blue text-white flex items-center justify-center shadow-sm shrink-0">
-                                    <i class="ph ph-user text-xl"></i>
+                            <a href="#" class="flex items-start space-x-3 sm:space-x-4 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-blue text-white flex items-center justify-center shadow-sm shrink-0">
+                                    <i class="ph ph-user text-lg sm:text-xl"></i>
                                 </div>
-                                <div class="flex flex-col justify-center h-10">
-                                    <div class="text-sm font-semibold text-slate-800 dark:text-slate-100">Akun Saya</div>
-                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Kelola Profil Akun</div>
+                                <div class="flex flex-col justify-center min-h-[36px] sm:min-h-[40px]">
+                                    <div class="text-[13px] sm:text-sm font-semibold text-slate-800 dark:text-slate-100">Akun Saya</div>
+                                    <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Kelola Profil Akun</div>
                                 </div>
                             </a>
                             
                             <!-- Ubah Password -->
-                            <a href="#" class="flex items-start space-x-4 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                                <div class="w-10 h-10 rounded-xl bg-brand-blue text-white flex items-center justify-center shadow-sm shrink-0">
-                                    <i class="ph ph-key text-xl"></i>
+                            <a href="#" class="flex items-start space-x-3 sm:space-x-4 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-blue text-white flex items-center justify-center shadow-sm shrink-0">
+                                    <i class="ph ph-key text-lg sm:text-xl"></i>
                                 </div>
-                                <div class="flex flex-col justify-center h-10">
-                                    <div class="text-sm font-semibold text-slate-800 dark:text-slate-100">Ubah Password</div>
-                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Kelola Keamanan Akun</div>
+                                <div class="flex flex-col justify-center min-h-[36px] sm:min-h-[40px]">
+                                    <div class="text-[13px] sm:text-sm font-semibold text-slate-800 dark:text-slate-100">Ubah Password</div>
+                                    <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Kelola Keamanan Akun</div>
                                 </div>
                             </a>
                         </div>
                         
                         <!-- Tombol Keluar -->
-                        <button class="w-full flex items-center justify-center space-x-2 py-2.5 border border-brand-blue dark:border-blue-400 text-brand-blue dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-700/50 transition text-sm font-medium">
+                        <button class="w-full flex items-center justify-center space-x-2 py-2 sm:py-2.5 border border-brand-blue dark:border-blue-400 text-brand-blue dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-700/50 transition text-[13px] sm:text-sm font-medium">
                             <i class="ph ph-sign-out text-lg"></i>
                             <span>Keluar Aplikasi</span>
                         </button>
@@ -481,58 +486,61 @@
         </header>
 
         <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth" id="main-scroll">
-            <div class="max-w-[1200px] mx-auto space-y-8">
+        <!-- Menambahkan padding bertahap untuk hp/tablet/desktop -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 scroll-smooth w-full" id="main-scroll">
+            
+            <!-- max-w-[1200px] dengan w-full & min-w-0 membatasi ledakan div secara horizontal -->
+            <div class="max-w-[1200px] w-full mx-auto space-y-6 md:space-y-8 min-w-0">
                 
                 <!-- Hero Banner -->
-                <div class="bg-brand-herobg dark:bg-slate-800 rounded-2xl p-6 md:p-8 relative overflow-hidden flex flex-col md:flex-row justify-between items-center md:items-start min-h-[200px] border border-blue-50 dark:border-slate-700 transition-colors duration-300">
+                <div class="bg-brand-herobg dark:bg-slate-800 rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row justify-between items-center md:items-start min-h-[200px] border border-blue-50 dark:border-slate-700 transition-colors duration-300 w-full">
                     
                     <div class="z-10 w-full md:w-2/3 mb-6 md:mb-0">
                         <div class="flex items-center space-x-3 mb-3">
                             <div class="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-semibold text-xs shadow-sm">UH</div>
-                            <span class="text-brand-blue dark:text-blue-400 font-semibold text-sm">Selamat datang kembali, Ujang Taofik Hidayat!</span>
+                            <span class="text-brand-blue dark:text-blue-400 font-semibold text-[13px] sm:text-sm">Selamat datang, Ujang Taofik!</span>
                         </div>
-                        <h1 class="text-3xl md:text-4xl font-bold text-brand-blue dark:text-blue-400 mb-2">Dashboard Sekolah Rakyat</h1>
-                        <p class="text-brand-blue/70 dark:text-blue-400/70 text-sm md:text-base">Ringkasan data sekolah rakyat dan statistik terkini</p>
+                        <!-- Font diperkecil agar pas di HP -->
+                        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-blue dark:text-blue-400 mb-2 leading-tight">Dashboard Sekolah Rakyat</h1>
+                        <p class="text-brand-blue/70 dark:text-blue-400/70 text-xs sm:text-sm md:text-base">Ringkasan data sekolah rakyat dan statistik terkini</p>
                     </div>
 
                     <!-- CSS Illustration representing school elements -->
-                    <div class="relative w-full md:w-1/3 h-[150px] flex items-end justify-end pointer-events-none">
-                        
+                    <div class="relative w-full md:w-1/3 h-[120px] md:h-[150px] flex items-end justify-center md:justify-end pointer-events-none opacity-80 md:opacity-100">
                         <!-- Floating particles -->
-                        <div class="absolute top-4 left-10 w-2 h-2 rounded-full bg-yellow-400"></div>
-                        <div class="absolute top-10 right-20 w-2 h-2 rounded-full bg-blue-300"></div>
-                        <div class="absolute bottom-10 left-20 w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                        <div class="absolute top-2 md:top-4 left-6 md:left-10 w-2 h-2 rounded-full bg-yellow-400"></div>
+                        <div class="absolute top-8 md:top-10 right-10 md:right-20 w-2 h-2 rounded-full bg-blue-300"></div>
+                        <div class="absolute bottom-6 md:bottom-10 left-12 md:left-20 w-1.5 h-1.5 rounded-full bg-green-400"></div>
 
                         <!-- Cap -->
-                        <div class="absolute top-8 left-4 text-emerald-400 rotate-[-15deg]">
-                            <i class="ph-fill ph-graduation-cap text-4xl drop-shadow-sm"></i>
+                        <div class="absolute top-4 md:top-8 left-2 md:left-4 text-emerald-400 rotate-[-15deg]">
+                            <i class="ph-fill ph-graduation-cap text-3xl md:text-4xl drop-shadow-sm"></i>
                         </div>
 
                         <!-- Books -->
                         <div class="absolute bottom-0 right-0 flex flex-col items-center">
-                            <div class="w-10 h-2 bg-red-400 rounded-sm mb-[2px]"></div>
-                            <div class="w-12 h-3 bg-yellow-400 rounded-sm mb-[2px]"></div>
-                            <div class="w-14 h-4 bg-cyan-400 rounded-sm"></div>
+                            <div class="w-8 md:w-10 h-2 bg-red-400 rounded-sm mb-[2px]"></div>
+                            <div class="w-10 md:w-12 h-3 bg-yellow-400 rounded-sm mb-[2px]"></div>
+                            <div class="w-12 md:w-14 h-4 bg-cyan-400 rounded-sm"></div>
                         </div>
 
                         <!-- Main Building -->
-                        <div class="relative flex flex-col items-center bottom-0 mr-16">
+                        <div class="relative flex flex-col items-center bottom-0 md:mr-16">
                             <!-- Flag -->
-                            <div class="absolute -top-10 left-1/2 ml-6">
-                                <div class="w-0.5 h-12 bg-brand-blue dark:bg-blue-500 relative">
-                                    <div class="absolute top-0 right-full w-5 h-3 bg-blue-300" style="clip-path: polygon(100% 0, 100% 100%, 0 50%); right: 0;"></div>
+                            <div class="absolute -top-8 md:-top-10 left-1/2 ml-5 md:ml-6">
+                                <div class="w-0.5 h-10 md:h-12 bg-brand-blue dark:bg-blue-500 relative">
+                                    <div class="absolute top-0 right-full w-4 h-2.5 md:w-5 md:h-3 bg-blue-300" style="clip-path: polygon(100% 0, 100% 100%, 0 50%); right: 0;"></div>
                                 </div>
                             </div>
                             <!-- Roof -->
-                            <div class="w-0 h-0 border-l-[70px] border-l-transparent border-r-[70px] border-r-transparent border-b-[50px] border-b-brand-blue dark:border-b-blue-500 relative z-10"></div>
+                            <div class="w-0 h-0 border-l-[50px] md:border-l-[70px] border-l-transparent border-r-[50px] md:border-r-[70px] border-r-transparent border-b-[40px] md:border-b-[50px] border-b-brand-blue dark:border-b-blue-500 relative z-10"></div>
                             <!-- Body -->
-                            <div class="w-[120px] h-[60px] bg-brand-blue dark:bg-blue-500 relative flex justify-center items-end">
+                            <div class="w-[90px] md:w-[120px] h-[50px] md:h-[60px] bg-brand-blue dark:bg-blue-500 relative flex justify-center items-end">
                                 <!-- Windows -->
-                                <div class="absolute top-2 left-3 grid grid-cols-2 gap-1"><div class="w-2.5 h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2.5 h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2.5 h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2.5 h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div></div>
-                                <div class="absolute top-2 right-3 grid grid-cols-2 gap-1"><div class="w-2.5 h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2.5 h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2.5 h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2.5 h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div></div>
+                                <div class="absolute top-1.5 md:top-2 left-2 md:left-3 grid grid-cols-2 gap-1"><div class="w-2 md:w-2.5 h-2.5 md:h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2 md:w-2.5 h-2.5 md:h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2 md:w-2.5 h-2.5 md:h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2 md:w-2.5 h-2.5 md:h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div></div>
+                                <div class="absolute top-1.5 md:top-2 right-2 md:right-3 grid grid-cols-2 gap-1"><div class="w-2 md:w-2.5 h-2.5 md:h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2 md:w-2.5 h-2.5 md:h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2 md:w-2.5 h-2.5 md:h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div><div class="w-2 md:w-2.5 h-2.5 md:h-3 bg-[#F4F7FF] dark:bg-slate-800 rounded-[1px]"></div></div>
                                 <!-- Door -->
-                                <div class="w-6 h-10 bg-[#F4F7FF] dark:bg-slate-800 rounded-t-md relative">
+                                <div class="w-5 md:w-6 h-8 md:h-10 bg-[#F4F7FF] dark:bg-slate-800 rounded-t-md relative">
                                     <div class="w-1 h-1 rounded-full bg-brand-blue dark:bg-blue-500 absolute right-1 top-1/2 -translate-y-1/2"></div>
                                 </div>
                             </div>
@@ -541,8 +549,9 @@
                 </div>
 
                 <!-- Tabs -->
-                <div class="border-b border-slate-200 dark:border-slate-800 relative">
-                    <div class="flex space-x-6 overflow-x-auto no-scrollbar pb-[1px]">
+                <!-- Pembatasan lebar di container agar horizonal scroll bekerja -->
+                <div class="border-b border-slate-200 dark:border-slate-800 relative w-full min-w-0">
+                    <div class="flex space-x-6 overflow-x-auto no-scrollbar pb-[1px] w-full min-w-0">
                         <button class="flex items-center space-x-2 text-brand-blue dark:text-blue-400 font-semibold pb-3 border-b-2 border-brand-blue dark:border-blue-400 whitespace-nowrap">
                             <i class="ph ph-check-circle text-lg"></i><span>Ringkasan</span>
                         </button>
@@ -563,137 +572,137 @@
                         </button>
                     </div>
                     <!-- Overflow indicator -->
-                    <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white dark:from-slate-900 to-transparent flex items-start justify-end pt-1 pointer-events-none hidden sm:block">
+                    <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-50 dark:from-slate-900 to-transparent flex items-start justify-end pt-1 pointer-events-none hidden sm:block">
                         <i class="ph ph-caret-right text-slate-400 dark:text-slate-500"></i>
                     </div>
                 </div>
 
                 <!-- Peta Sebaran Banner -->
-                <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 md:p-6 flex items-center justify-between shadow-sm bg-white dark:bg-slate-800 transition-colors duration-300">
-                    <h2 class="text-base md:text-lg font-bold text-slate-800 dark:text-slate-100">Peta Sebaran Sekolah Rakyat</h2>
-                    <button class="bg-brand-lightblue dark:bg-slate-700 text-brand-blue dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-slate-600 transition-colors px-3 py-1.5 md:px-4 md:py-2 rounded-lg flex items-center space-x-2 text-sm font-semibold">
+                <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 md:p-6 flex items-center justify-between shadow-sm bg-white dark:bg-slate-800 transition-colors duration-300 w-full min-w-0">
+                    <h2 class="text-sm sm:text-base md:text-lg font-bold text-slate-800 dark:text-slate-100 truncate pr-2">Peta Sebaran Sekolah Rakyat</h2>
+                    <button class="bg-brand-lightblue dark:bg-slate-700 text-brand-blue dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-slate-600 transition-colors px-3 py-1.5 md:px-4 md:py-2 rounded-lg flex items-center space-x-2 text-[13px] sm:text-sm font-semibold shrink-0">
                         <span class="hidden sm:inline">Tampilkan</span>
                         <i class="ph ph-caret-down"></i>
                     </button>
                 </div>
 
                 <!-- Statistik Utama -->
-                <section>
-                    <h3 class="text-[11px] font-bold text-brand-blue dark:text-blue-400 uppercase tracking-wider mb-1">RINGKASAN</h3>
-                    <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Statistik Utama Sekolah Rakyat</h2>
+                <section class="w-full min-w-0">
+                    <h3 class="text-[10px] sm:text-[11px] font-bold text-brand-blue dark:text-blue-400 uppercase tracking-wider mb-1">RINGKASAN</h3>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Statistik Utama Sekolah Rakyat</h2>
                     
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        <div class="h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-blue-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition">
-                            <div class="absolute -bottom-4 -right-4 w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
-                            <i class="ph ph-buildings text-3xl text-blue-500 z-10 mb-1"></i>
-                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Sekolah</span>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 w-full">
+                        <div class="h-24 sm:h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-blue-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute -bottom-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
+                            <i class="ph ph-buildings text-2xl sm:text-3xl text-blue-500 z-10 mb-1"></i>
+                            <span class="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Sekolah</span>
                         </div>
-                        <div class="h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-amber-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition">
-                            <div class="absolute -bottom-4 -right-4 w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
-                            <i class="ph ph-users text-3xl text-amber-500 z-10 mb-1"></i>
-                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Peserta Didik</span>
+                        <div class="h-24 sm:h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-amber-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute -bottom-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
+                            <i class="ph ph-users text-2xl sm:text-3xl text-amber-500 z-10 mb-1"></i>
+                            <span class="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Peserta Didik</span>
                         </div>
-                        <div class="h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-cyan-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition">
-                            <div class="absolute -bottom-4 -right-4 w-16 h-16 bg-cyan-100 dark:bg-cyan-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
-                            <i class="ph ph-graduation-cap text-3xl text-cyan-600 z-10 mb-1"></i>
-                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Guru</span>
+                        <div class="h-24 sm:h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-cyan-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute -bottom-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 bg-cyan-100 dark:bg-cyan-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
+                            <i class="ph ph-graduation-cap text-2xl sm:text-3xl text-cyan-600 z-10 mb-1"></i>
+                            <span class="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Guru</span>
                         </div>
-                        <div class="h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-orange-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition">
-                            <div class="absolute -bottom-4 -right-4 w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
-                            <i class="ph ph-users-three text-3xl text-orange-500 z-10 mb-1"></i>
-                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Tendik</span>
+                        <div class="h-24 sm:h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-orange-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute -bottom-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
+                            <i class="ph ph-users-three text-2xl sm:text-3xl text-orange-500 z-10 mb-1"></i>
+                            <span class="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Tendik</span>
                         </div>
-                        <div class="h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-blue-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition hidden lg:flex">
+                        <div class="h-24 sm:h-28 border border-slate-100 dark:border-slate-700 rounded-xl bg-blue-50/50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-md transition hidden lg:flex">
                             <div class="absolute -bottom-4 -right-4 w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
                             <i class="ph ph-map-pin text-3xl text-blue-500 z-10 mb-1"></i>
-                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Lokasi</span>
+                            <span class="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 z-10">Lokasi</span>
                         </div>
                     </div>
                 </section>
 
                 <!-- Komposisi Jenis Kelamin -->
-                <section>
-                    <h3 class="text-[11px] font-bold text-brand-blue dark:text-blue-400 uppercase tracking-wider mb-1 mt-6">KOMPOSISI JENIS KELAMIN</h3>
-                    <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Jenis Kelamin</h2>
+                <section class="w-full min-w-0">
+                    <h3 class="text-[10px] sm:text-[11px] font-bold text-brand-blue dark:text-blue-400 uppercase tracking-wider mb-1 mt-6">KOMPOSISI JENIS KELAMIN</h3>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Jenis Kelamin</h2>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 w-full">
                         
                         <!-- Chart Card 1 -->
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition flex flex-col">
+                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-5 sm:p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition flex flex-col w-full min-w-0">
                             <div class="flex justify-between items-start mb-6">
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100">Jenis Kelamin Peserta Didik</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sumber data: Jamsos</p>
+                                    <h4 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">Peserta Didik</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1">Sumber data: Jamsos</p>
                                 </div>
-                                <i class="ph ph-users text-blue-500 text-xl"></i>
+                                <i class="ph ph-users text-blue-500 text-lg sm:text-xl shrink-0"></i>
                             </div>
-                            <div class="relative flex-1 flex justify-center items-center h-48 w-full mx-auto">
+                            <div class="relative flex-1 flex justify-center items-center h-40 sm:h-48 w-full mx-auto min-h-[160px]">
                                 <canvas id="chartPeserta"></canvas>
                                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <span class="text-2xl font-bold text-slate-800 dark:text-slate-100">36.097</span>
+                                    <span class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100">36.097</span>
                                 </div>
                             </div>
-                            <div class="mt-4 flex flex-col space-y-1.5 text-xs">
+                            <div class="mt-4 flex flex-col space-y-1.5 text-[11px] sm:text-xs">
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-3 h-3 rounded bg-brand-cyan"></div>
+                                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-brand-cyan shrink-0"></div>
                                     <span class="text-slate-600 dark:text-slate-300">Laki-laki: <strong class="text-slate-800 dark:text-slate-100">18.304</strong></span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-3 h-3 rounded bg-brand-pink"></div>
+                                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-brand-pink shrink-0"></div>
                                     <span class="text-slate-600 dark:text-slate-300">Perempuan: <strong class="text-slate-800 dark:text-slate-100">17.793</strong></span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Chart Card 2 -->
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition flex flex-col">
+                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-5 sm:p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition flex flex-col w-full min-w-0">
                             <div class="flex justify-between items-start mb-6">
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100">Jenis Kelamin Guru</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sumber data: Pusdiklat</p>
+                                    <h4 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">Guru</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1">Sumber data: Pusdiklat</p>
                                 </div>
-                                <i class="ph ph-user-circle-plus text-blue-500 text-xl"></i>
+                                <i class="ph ph-user-circle-plus text-blue-500 text-lg sm:text-xl shrink-0"></i>
                             </div>
-                            <div class="relative flex-1 flex justify-center items-center h-48 w-full mx-auto">
+                            <div class="relative flex-1 flex justify-center items-center h-40 sm:h-48 w-full mx-auto min-h-[160px]">
                                 <canvas id="chartGuru"></canvas>
                                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <span class="text-2xl font-bold text-slate-800 dark:text-slate-100">2.581</span>
+                                    <span class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100">2.581</span>
                                 </div>
                             </div>
-                            <div class="mt-4 flex flex-col space-y-1.5 text-xs">
+                            <div class="mt-4 flex flex-col space-y-1.5 text-[11px] sm:text-xs">
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-3 h-3 rounded bg-brand-cyan"></div>
+                                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-brand-cyan shrink-0"></div>
                                     <span class="text-slate-600 dark:text-slate-300">Laki-laki: <strong class="text-slate-800 dark:text-slate-100">842</strong></span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-3 h-3 rounded bg-brand-pink"></div>
+                                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-brand-pink shrink-0"></div>
                                     <span class="text-slate-600 dark:text-slate-300">Perempuan: <strong class="text-slate-800 dark:text-slate-100">1.739</strong></span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Chart Card 3 -->
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition flex flex-col">
+                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-5 sm:p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition flex flex-col w-full min-w-0">
                             <div class="flex justify-between items-start mb-6">
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100">Jenis Kelamin Tendik</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sumber data: Pusdiklat</p>
+                                    <h4 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">Tendik</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1">Sumber data: Pusdiklat</p>
                                 </div>
-                                <i class="ph ph-users-three text-orange-500 text-xl"></i>
+                                <i class="ph ph-users-three text-orange-500 text-lg sm:text-xl shrink-0"></i>
                             </div>
-                            <div class="relative flex-1 flex justify-center items-center h-48 w-full mx-auto">
+                            <div class="relative flex-1 flex justify-center items-center h-40 sm:h-48 w-full mx-auto min-h-[160px]">
                                 <canvas id="chartTendik"></canvas>
                                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <span class="text-2xl font-bold text-slate-800 dark:text-slate-100">10.908</span>
+                                    <span class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100">10.908</span>
                                 </div>
                             </div>
-                            <div class="mt-4 flex flex-col space-y-1.5 text-xs">
+                            <div class="mt-4 flex flex-col space-y-1.5 text-[11px] sm:text-xs">
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-3 h-3 rounded bg-brand-cyan"></div>
+                                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-brand-cyan shrink-0"></div>
                                     <span class="text-slate-600 dark:text-slate-300">Laki-laki: <strong class="text-slate-800 dark:text-slate-100">6.362</strong></span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-3 h-3 rounded bg-brand-pink"></div>
+                                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded bg-brand-pink shrink-0"></div>
                                     <span class="text-slate-600 dark:text-slate-300">Perempuan: <strong class="text-slate-800 dark:text-slate-100">4.249</strong></span>
                                 </div>
                             </div>
@@ -703,152 +712,153 @@
                 </section>
 
                 <!-- Rasio -->
-                <section>
-                    <h3 class="text-[11px] font-bold text-brand-blue dark:text-blue-400 uppercase tracking-wider mb-1 mt-6">RASIO</h3>
-                    <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Perbandingan Kunci</h2>
+                <section class="w-full min-w-0">
+                    <h3 class="text-[10px] sm:text-[11px] font-bold text-brand-blue dark:text-blue-400 uppercase tracking-wider mb-1 mt-6">RASIO</h3>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Perbandingan Kunci</h2>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-[#F0F5FF] dark:bg-slate-800 rounded-xl p-6 text-center border border-blue-100 dark:border-slate-700 flex flex-col items-center justify-center hover:-translate-y-1 transition duration-300">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                        <div class="bg-[#F0F5FF] dark:bg-slate-800 rounded-xl p-5 sm:p-6 text-center border border-blue-100 dark:border-slate-700 flex flex-col items-center justify-center hover:-translate-y-1 transition duration-300">
                             <i class="ph ph-chart-bar text-brand-blue dark:text-blue-400 text-2xl mb-2"></i>
-                            <h4 class="text-sm font-semibold text-brand-blue dark:text-blue-400 mb-1">Sekolah per Provinsi</h4>
-                            <span class="text-4xl font-bold text-brand-blue dark:text-blue-400 mb-2">5.4</span>
-                            <p class="text-[10px] text-brand-blue/70 dark:text-blue-400/70">Rata-rata sekolah per provinsi</p>
+                            <h4 class="text-[13px] sm:text-sm font-semibold text-brand-blue dark:text-blue-400 mb-1">Sekolah per Provinsi</h4>
+                            <span class="text-3xl sm:text-4xl font-bold text-brand-blue dark:text-blue-400 mb-2">5.4</span>
+                            <p class="text-[9px] sm:text-[10px] text-brand-blue/70 dark:text-blue-400/70">Rata-rata sekolah per provinsi</p>
                         </div>
-                        <div class="bg-[#E6F6F6] dark:bg-slate-800 rounded-xl p-6 text-center border border-teal-100 dark:border-slate-700 flex flex-col items-center justify-center hover:-translate-y-1 transition duration-300">
+                        <div class="bg-[#E6F6F6] dark:bg-slate-800 rounded-xl p-5 sm:p-6 text-center border border-teal-100 dark:border-slate-700 flex flex-col items-center justify-center hover:-translate-y-1 transition duration-300">
                             <i class="ph ph-users text-teal-600 dark:text-teal-400 text-2xl mb-2"></i>
-                            <h4 class="text-sm font-semibold text-teal-600 dark:text-teal-400 mb-1">Siswa per Sekolah</h4>
-                            <span class="text-4xl font-bold text-teal-600 dark:text-teal-400 mb-2">198</span>
-                            <p class="text-[10px] text-teal-600/70 dark:text-teal-400/70">Rata-rata siswa per sekolah</p>
+                            <h4 class="text-[13px] sm:text-sm font-semibold text-teal-600 dark:text-teal-400 mb-1">Siswa per Sekolah</h4>
+                            <span class="text-3xl sm:text-4xl font-bold text-teal-600 dark:text-teal-400 mb-2">198</span>
+                            <p class="text-[9px] sm:text-[10px] text-teal-600/70 dark:text-teal-400/70">Rata-rata siswa per sekolah</p>
                         </div>
-                        <div class="bg-[#FEF5E7] dark:bg-slate-800 rounded-xl p-6 text-center border border-orange-100 dark:border-slate-700 flex flex-col items-center justify-center hover:-translate-y-1 transition duration-300">
+                        <div class="bg-[#FEF5E7] dark:bg-slate-800 rounded-xl p-5 sm:p-6 text-center border border-orange-100 dark:border-slate-700 flex flex-col items-center justify-center hover:-translate-y-1 transition duration-300">
                             <i class="ph ph-user text-orange-600 dark:text-orange-400 text-2xl mb-2"></i>
-                            <h4 class="text-sm font-semibold text-orange-600 dark:text-orange-400 mb-1">Siswa per Guru</h4>
-                            <span class="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">14:1</span>
-                            <p class="text-[10px] text-orange-600/70 dark:text-orange-400/70">Rasio siswa terhadap guru</p>
+                            <h4 class="text-[13px] sm:text-sm font-semibold text-orange-600 dark:text-orange-400 mb-1">Siswa per Guru</h4>
+                            <span class="text-3xl sm:text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">14:1</span>
+                            <p class="text-[9px] sm:text-[10px] text-orange-600/70 dark:text-orange-400/70">Rasio siswa terhadap guru</p>
                         </div>
-                        <div class="bg-[#E6F9F0] dark:bg-slate-800 rounded-xl p-6 text-center border border-emerald-100 dark:border-slate-700 flex flex-col items-center justify-center hover:-translate-y-1 transition duration-300">
+                        <div class="bg-[#E6F9F0] dark:bg-slate-800 rounded-xl p-5 sm:p-6 text-center border border-emerald-100 dark:border-slate-700 flex flex-col items-center justify-center hover:-translate-y-1 transition duration-300">
                             <i class="ph ph-buildings text-emerald-600 dark:text-emerald-400 text-2xl mb-2"></i>
-                            <h4 class="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-1">Guru per Sekolah</h4>
-                            <span class="text-4xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">14.2</span>
-                            <p class="text-[10px] text-emerald-600/70 dark:text-emerald-400/70">Rata-rata guru per sekolah</p>
+                            <h4 class="text-[13px] sm:text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-1">Guru per Sekolah</h4>
+                            <span class="text-3xl sm:text-4xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">14.2</span>
+                            <p class="text-[9px] sm:text-[10px] text-emerald-600/70 dark:text-emerald-400/70">Rata-rata guru per sekolah</p>
                         </div>
                     </div>
                 </section>
 
                 <!-- Top 10 Provinsi -->
-                <section>
-                    <h3 class="text-[11px] font-bold text-brand-blue dark:text-blue-400 uppercase tracking-wider mb-1 mt-6">TOP 10 PROVINSI</h3>
-                    <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Sebaran Sekolah, Siswa, Guru & Tendik</h2>
+                <!-- Penyesuaian shrink-0 dan text size pada label memastikan grafik tidak mendorong batas layar HP -->
+                <section class="w-full min-w-0">
+                    <h3 class="text-[10px] sm:text-[11px] font-bold text-brand-blue dark:text-blue-400 uppercase tracking-wider mb-1 mt-6">TOP 10 PROVINSI</h3>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Sebaran Sekolah, Siswa, Guru & Tendik</h2>
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full">
                         
                         <!-- Top 10 Sekolah -->
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition">
+                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 sm:p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition w-full min-w-0">
                             <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100">Jumlah Sekolah (Top 10)</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sebaran sekolah rakyat per provinsi</p>
+                                <div class="overflow-hidden">
+                                    <h4 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 truncate">Jumlah Sekolah (Top 10)</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">Sebaran sekolah rakyat per provinsi</p>
                                 </div>
-                                <i class="ph ph-buildings text-blue-400 text-xl"></i>
+                                <i class="ph ph-buildings text-blue-400 text-lg sm:text-xl shrink-0 ml-2"></i>
                             </div>
                             
-                            <div class="space-y-3 mt-4 text-xs relative pb-6 border-b border-l border-slate-100 dark:border-slate-700 pl-2">
-                                <div class="absolute bottom-0 left-2 right-0 flex justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
+                            <div class="space-y-3 mt-4 relative pb-6 border-b border-l border-slate-100 dark:border-slate-700 pl-2">
+                                <div class="absolute bottom-0 left-2 right-0 flex justify-between text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
                                     <span>0</span><span>10</span><span>20</span><span>30</span>
                                 </div>
                                 
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase">JAWA TIMUR</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 96%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">29</span></div></div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase">JAWA BARAT</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 80%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">24</span></div></div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase">JAWA TENGAH</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 53%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">16</span></div></div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase truncate" title="SULAWESI SELATAN">SULAWESI...</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 46%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">14</span></div></div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase">ACEH</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 30%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">9</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="JAWA TIMUR">JAWA TIMUR</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 96%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">29</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="JAWA BARAT">JAWA BARAT</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 80%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">24</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="JAWA TENGAH">JAWA TENGAH</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 53%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">16</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="SULAWESI SELATAN">SULAWESI...</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 46%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">14</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="ACEH">ACEH</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 30%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">9</span></div></div>
                             </div>
-                            <div class="text-center mt-4 flex items-center justify-center text-xs text-slate-500 dark:text-slate-400">
+                            <div class="text-center mt-4 flex items-center justify-center text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                                 <div class="w-2 h-2 rounded-full bg-brand-cyan mr-1.5"></div> Sekolah
                             </div>
                         </div>
 
                         <!-- Top 10 Siswa -->
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition">
+                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 sm:p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition w-full min-w-0">
                             <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100">Jumlah Siswa (Top 10)</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sebaran peserta didik per provinsi</p>
+                                <div class="overflow-hidden">
+                                    <h4 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 truncate">Jumlah Siswa (Top 10)</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">Sebaran peserta didik per provinsi</p>
                                 </div>
-                                <i class="ph ph-users text-teal-400 text-xl"></i>
+                                <i class="ph ph-users text-teal-400 text-lg sm:text-xl shrink-0 ml-2"></i>
                             </div>
                             
-                            <div class="space-y-3 mt-4 text-xs relative pb-6 border-b border-l border-slate-100 dark:border-slate-700 pl-2">
-                                <div class="absolute bottom-0 left-2 right-0 flex justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
+                            <div class="space-y-3 mt-4 relative pb-6 border-b border-l border-slate-100 dark:border-slate-700 pl-2">
+                                <div class="absolute bottom-0 left-2 right-0 flex justify-between text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
                                     <span>0</span><span>2000</span><span>4000</span><span>6000</span><span>8000</span>
                                 </div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase">JAWA TIMUR</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 81%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">6.548</span></div></div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase">JAWA BARAT</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 50%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">4.042</span></div></div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase">JAWA TENGAH</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 41%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">3.333</span></div></div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase truncate">SULAWESI...</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 40%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">3.209</span></div></div>
-                                <div class="flex items-center"><span class="w-24 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase">ACEH</span><div class="flex-1 flex items-center"><div class="h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 20%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100">1.645</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="JAWA TIMUR">JAWA TIMUR</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 81%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">6.548</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="JAWA BARAT">JAWA BARAT</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 50%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">4.042</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="JAWA TENGAH">JAWA TENGAH</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 41%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">3.333</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="SULAWESI SELATAN">SULAWESI...</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 40%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">3.209</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-24 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] sm:text-xs truncate shrink-0" title="ACEH">ACEH</span><div class="flex-1 flex items-center min-w-0"><div class="h-3.5 sm:h-4 bg-brand-cyan hover:bg-blue-600 transition-colors rounded-sm" style="width: 20%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs">1.645</span></div></div>
                             </div>
-                            <div class="text-center mt-4 flex items-center justify-center text-xs text-slate-500 dark:text-slate-400">
+                            <div class="text-center mt-4 flex items-center justify-center text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                                 <div class="w-2 h-2 rounded-full bg-brand-cyan mr-1.5"></div> Siswa
                             </div>
                         </div>
 
                         <!-- Top 10 Guru -->
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition">
+                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 sm:p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition w-full min-w-0">
                             <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100">Jumlah Guru (Top 10)</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sebaran guru per provinsi</p>
+                                <div class="overflow-hidden">
+                                    <h4 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 truncate">Jumlah Guru (Top 10)</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">Sebaran guru per provinsi</p>
                                 </div>
-                                <i class="ph ph-graduation-cap text-blue-400 text-xl"></i>
+                                <i class="ph ph-graduation-cap text-blue-400 text-lg sm:text-xl shrink-0 ml-2"></i>
                             </div>
                             
-                            <div class="space-y-2.5 mt-4 text-xs relative pb-6 border-b border-l border-slate-100 dark:border-slate-700 pl-2">
-                                <div class="absolute bottom-0 left-2 right-0 flex justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
+                            <div class="space-y-2.5 mt-4 relative pb-6 border-b border-l border-slate-100 dark:border-slate-700 pl-2">
+                                <div class="absolute bottom-0 left-2 right-0 flex justify-between text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
                                     <span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span>
                                 </div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">JAWA TIMUR</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 87%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">439</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">JAWA BARAT</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 62%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">310</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] truncate">SULAWESI...</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 45%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">225</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">JAWA TENGAH</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 39%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">197</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">ACEH</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 25%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">127</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">SUMATERA UTARA</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 18%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">92</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] truncate">SUMATERA...</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">77</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">BANTEN</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 12%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">60</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">RIAU</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 10%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">51</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">KEPULAUAN RIAU</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 10%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">50</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="JAWA TIMUR">JAWA TIMUR</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 87%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">439</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="JAWA BARAT">JAWA BARAT</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 62%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">310</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="SULAWESI SELATAN">SULAWESI...</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 45%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">225</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="JAWA TENGAH">JAWA TENGAH</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 39%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">197</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="ACEH">ACEH</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 25%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">127</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="SUMATERA UTARA">SUMATRA UTARA</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 18%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">92</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="SUMATERA BARAT">SUMATERA...</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">77</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="BANTEN">BANTEN</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 12%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">60</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="RIAU">RIAU</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 10%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">51</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="KEPULAUAN RIAU">KEP. RIAU</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 10%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">50</span></div></div>
                             </div>
-                            <div class="text-center mt-4 flex items-center justify-center text-xs text-slate-500 dark:text-slate-400">
+                            <div class="text-center mt-4 flex items-center justify-center text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                                 <div class="w-2 h-2 rounded-full bg-brand-cyan mr-1.5"></div> Guru
                             </div>
                         </div>
 
                         <!-- Top 10 Tendik -->
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition">
+                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 sm:p-6 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition w-full min-w-0">
                             <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100">Jumlah Tendik (Top 10)</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sebaran tendik per provinsi</p>
+                                <div class="overflow-hidden">
+                                    <h4 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 truncate">Jumlah Tendik (Top 10)</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">Sebaran tendik per provinsi</p>
                                 </div>
-                                <i class="ph ph-users-three text-orange-400 text-xl"></i>
+                                <i class="ph ph-users-three text-orange-400 text-lg sm:text-xl shrink-0 ml-2"></i>
                             </div>
                             
-                            <div class="space-y-2.5 mt-4 text-xs relative pb-6 border-b border-l border-slate-100 dark:border-slate-700 pl-2">
-                                <div class="absolute bottom-0 left-2 right-0 flex justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
+                            <div class="space-y-2.5 mt-4 relative pb-6 border-b border-l border-slate-100 dark:border-slate-700 pl-2">
+                                <div class="absolute bottom-0 left-2 right-0 flex justify-between text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
                                     <span>0</span><span>500</span><span>1000</span><span>1500</span><span>2000</span>
                                 </div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">JAWA TIMUR</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 83%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">1.662</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">JAWA BARAT</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 66%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">1.329</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">JAWA TENGAH</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 54%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">1.084</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] truncate">SULAWESI...</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 46%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">938</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">ACEH</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 27%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">544</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">SUMATERA UTARA</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 25%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">499</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] truncate">SUMATERA...</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">318</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px]">BANTEN</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">309</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] truncate">NUSA TENGGARA...</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">302</span></div></div>
-                                <div class="flex items-center"><span class="w-28 text-right pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[10px] truncate">KALIMANTAN...</span><div class="flex-1 flex items-center"><div class="h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[10px]">300</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="JAWA TIMUR">JAWA TIMUR</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 83%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">1.662</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="JAWA BARAT">JAWA BARAT</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 66%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">1.329</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="JAWA TENGAH">JAWA TENGAH</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 54%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">1.084</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="SULAWESI SELATAN">SULAWESI...</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 46%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">938</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="ACEH">ACEH</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 27%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">544</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="SUMATERA UTARA">SUMATRA UTARA</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 25%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">499</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="SUMATERA SELATAN">SUMATERA...</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">318</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="BANTEN">BANTEN</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">309</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="NUSA TENGGARA BARAT">NUSA TENGGARA...</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">302</span></div></div>
+                                <div class="flex items-center"><span class="w-20 sm:w-28 text-right pr-2 sm:pr-3 font-medium text-slate-600 dark:text-slate-300 uppercase text-[9px] sm:text-[10px] truncate shrink-0" title="KALIMANTAN SELATAN">KALIMANTAN...</span><div class="flex-1 flex items-center min-w-0"><div class="h-3 sm:h-3.5 bg-brand-cyan rounded-sm" style="width: 15%"></div><span class="ml-2 font-bold text-slate-800 dark:text-slate-100 text-[9px] sm:text-[10px]">300</span></div></div>
                             </div>
-                            <div class="text-center mt-4 flex items-center justify-center text-xs text-slate-500 dark:text-slate-400">
+                            <div class="text-center mt-4 flex items-center justify-center text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                                 <div class="w-2 h-2 rounded-full bg-brand-cyan mr-1.5"></div> Tendik
                             </div>
                         </div>
@@ -856,7 +866,7 @@
                     </div>
                 </section>
 
-                <footer class="text-center py-10 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                <footer class="text-center py-10 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 space-y-1">
                     <p>&copy; 2026 Kementerian Sosial Republik Indonesia</p>
                     <p>SETARA - Sistem Edukasi Terpadu Sekolah Rakyat</p>
                 </footer>
@@ -865,7 +875,7 @@
         </div>
         
         <!-- Floating Action Button (Back to top) -->
-        <button onclick="document.getElementById('main-scroll').scrollTo(0,0)" class="absolute bottom-6 right-6 w-10 h-10 bg-brand-blue text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors z-50">
+        <button onclick="document.getElementById('main-scroll').scrollTo(0,0)" class="absolute bottom-6 right-4 sm:right-6 w-10 h-10 bg-brand-blue text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors z-50">
             <i class="ph ph-arrow-up text-lg"></i>
         </button>
 
@@ -934,19 +944,57 @@
             }
         });
 
-        // Sidebar Toggle Logic
+        // Sidebar Toggle Logic (Perbaikan untuk Mobile dan Desktop)
         const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
         const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobile-overlay');
 
-        // Check user preference for sidebar state
-        if (localStorage.getItem('sidebarCollapsed') === 'true') {
-            sidebar.classList.add('sidebar-collapsed');
+        // Check user preference for sidebar state (Berlaku khusus desktop)
+        if (window.innerWidth >= 768) {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                sidebar.classList.add('sidebar-collapsed');
+            }
         }
 
         // Listen for sidebar toggle click
         sidebarToggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('sidebar-collapsed');
-            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('sidebar-collapsed'));
+            if (window.innerWidth < 768) {
+                // Perilaku Mobile: Menampilkan / menyembunyikan utuh
+                sidebar.classList.toggle('-translate-x-full');
+                
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    mobileOverlay.classList.remove('opacity-100');
+                    setTimeout(() => mobileOverlay.classList.add('hidden'), 300);
+                } else {
+                    mobileOverlay.classList.remove('hidden');
+                    // Menggunakan timeout kecil agar class 'hidden' terhapus lebih dulu sebelum transisi opacity berjalan
+                    setTimeout(() => mobileOverlay.classList.add('opacity-100'), 10);
+                }
+            } else {
+                // Perilaku Desktop: Expand / Collapse ke ikon 80px
+                sidebar.classList.toggle('sidebar-collapsed');
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('sidebar-collapsed'));
+            }
+        });
+
+        // Menyembunyikan sidebar di mobile ketika mengklik overlay gelap
+        mobileOverlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            mobileOverlay.classList.remove('opacity-100');
+            setTimeout(() => mobileOverlay.classList.add('hidden'), 300);
+        });
+
+        // Mereset state dengan rapi saat user me-resize jendela browser (rotasi hp / resize browser PC)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('-translate-x-full'); // Memastikan menu tidak hilang ketika kembali ke desktop
+                mobileOverlay.classList.add('hidden');
+                mobileOverlay.classList.remove('opacity-100');
+            } else {
+                if (!mobileOverlay.classList.contains('opacity-100')) {
+                    sidebar.classList.add('-translate-x-full'); // Reset ke kondisi tertutup saat awal mobile resize
+                }
+            }
         });
 
         // Menu Expand/Collapse Logic for "Sekolah Rakyat"
@@ -956,8 +1004,8 @@
 
         menuSekolahRakyat.addEventListener('click', (e) => {
             e.preventDefault();
-            // Jika sidebar sedang collapsed, cegah klik membuka menu agar tidak berantakan
-            if (sidebar.classList.contains('sidebar-collapsed')) return;
+            // Jika sidebar sedang collapsed di desktop, cegah klik membuka menu agar tidak berantakan
+            if (sidebar.classList.contains('sidebar-collapsed') && window.innerWidth >= 768) return;
             
             submenuSekolahRakyat.classList.toggle('hidden');
             iconSekolahRakyat.classList.toggle('rotate-180');
